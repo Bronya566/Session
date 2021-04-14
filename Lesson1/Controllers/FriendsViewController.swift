@@ -9,11 +9,12 @@ import UIKit
 
 class FriendsViewController: UITableViewController {
     
-     var friends = TestsData.testsFriends()
+    var friends = TestsData.testsFriends()
     private var friendGrouping: [String:[User]] = [:]
     private var letters: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
+ //       Session.session.vk()
     }
 
     // MARK: - Table view data source

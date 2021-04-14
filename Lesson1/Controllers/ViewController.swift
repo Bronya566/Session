@@ -6,12 +6,21 @@
 //
 
 import UIKit
+import Alamofire
+import WebKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, WKNavigationDelegate {
  
-    @IBOutlet weak var login: UITextField!
+    @IBOutlet weak var webView: WKWebView! {
+        didSet{
+            webView.navigationDelegate = self
+        }
+    }
+
     
-    @IBOutlet weak var password: UITextField!
+//    @IBOutlet weak var login: UITextField!
+//
+//    @IBOutlet weak var password: UITextField!
     
     @IBOutlet weak var scrol: UIScrollView!
     
@@ -29,6 +38,14 @@ class ViewController: UIViewController {
     private lazy var circles = [circleA, circleB, circleC]
     
     override func viewDidLoad() {
+//        let url = NSURL (string: "https://vk.com/login")
+//        let requestObj = NSURLRequest(url: url! as URL)
+//        webView.load(requestObj as URLRequest)
+        vkSing()
+        //////////////////////////
+
+       ////////////////////////////
+        
         super.viewDidLoad()
         view.addSubview(stackView)
                stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,15 +66,137 @@ class ViewController: UIViewController {
                 scrol?.addGestureRecognizer(hideKeyboardGesture)
 
     }
-    @IBAction func singButton(_action: UIButton){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
-        present(twoScreen, animated: true, completion: nil)
+//    @IBAction func singButton(_action: UIButton){
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
+//        present(twoScreen, animated: true, completion: nil)
+//    }
+    
+    func vkSing() {
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+                urlComponents.host = "oauth.vk.com"
+                urlComponents.path = "/authorize"
+                urlComponents.queryItems = [
+                    URLQueryItem(name: "client_id", value: "7824758"),
+                    URLQueryItem(name: "display", value: "mobile"),
+                    URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
+                    URLQueryItem(name: "scope", value: "262150"),
+                    URLQueryItem(name: "response_type", value: "token"),
+                    URLQueryItem(name: "v", value: "5.68")
+                ]
+                
+                let request = URLRequest(url: urlComponents.url!)
+                
+        webView.load(request)
     }
     
-
-
     
+    func vkFriends(){
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+                urlComponents.path = "/method/friends.get"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "user_id", value: String(Session.session.userId)),
+            URLQueryItem(name: "order", value:  "name"),
+            URLQueryItem(name: "count", value:  "20"),
+            URLQueryItem(name: "fields", value:  "name"),
+            URLQueryItem(name: "access_token", value: Session.session.token),
+            URLQueryItem(name: "v", value: "5.68")
+        ]
+        let request = URLRequest(url: urlComponents.url!)
+        print(request)
+
+          print("")
+        Alamofire.request(request).response { [weak self] data in
+            do {
+                let json = try JSONDecoder().decode(BBB.self, from: data.data!) as BBB
+                    print(json)
+                print("")
+                var friends: [User] = []
+                json.response.items.forEach {
+                    let item = User(name: $0.first_name + $0.last_name)
+                    friends.append(item)
+                }
+                self?.vkFriendsPhoto()
+                self?.vkFriendsGroup()
+                self?.vkFriendsGroupSerch()
+            }
+            catch {
+                print(error)
+            }
+        }
+    }
+    
+    func vkFriendsPhoto(){
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+                urlComponents.path = "/method/users.get"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "user_ids", value: String(Session.session.userId)),
+            URLQueryItem(name: "fields", value:  "photo_50"),
+            URLQueryItem(name: "access_token", value: Session.session.token),
+            URLQueryItem(name: "v", value: "5.68")
+        ]
+        let request = URLRequest(url: urlComponents.url!)
+        print(request)
+
+          print("")
+        Alamofire.request(request).response { data in
+            print(data)
+            print("")
+        }
+    }
+    
+    
+    func vkFriendsGroup(){
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+                urlComponents.path = "/method/groups.get"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "user_id", value: String(Session.session.userId)),
+            URLQueryItem(name: "extended", value:  "1"),
+            URLQueryItem(name: "count", value:  "20"),
+            URLQueryItem(name: "access_token", value: Session.session.token),
+            URLQueryItem(name: "v", value: "5.68")
+        ]
+        let request = URLRequest(url: urlComponents.url!)
+        print(request)
+
+          print("")
+        Alamofire.request(request).response { data in
+            print(data)
+            print("")
+        }
+    }
+    
+    func vkFriendsGroupSerch(){
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+                urlComponents.path = "/method/groups.search"
+        urlComponents.queryItems = [
+            
+            URLQueryItem(name: "q", value:  "Music"),
+            URLQueryItem(name: "count", value:  "20"),
+            URLQueryItem(name: "access_token", value: Session.session.token),
+            URLQueryItem(name: "v", value: "5.68")
+        ]
+        let request = URLRequest(url: urlComponents.url!)
+        print(request)
+
+          print("")
+        Alamofire.request(request).response { data in
+            print(data)
+            print("")
+        }
+    }
+    
+    
+
     @objc func keyboardWasShown(notification: Notification) {
            
            let info = notification.userInfo! as NSDictionary
@@ -136,6 +275,7 @@ class ViewController: UIViewController {
 //
 //    }
 //    func validateLogin() -> Bool {
+//   //     return login = vkSing()
 //        return login.text == "admin" &&
 //               password.text == "12345"
 //    }
@@ -148,3 +288,53 @@ class ViewController: UIViewController {
     
 }
 
+extension ViewController {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        
+        guard let url = navigationResponse.response.url, url.path == "/blank.html", let fragment = url.fragment  else {
+            decisionHandler(.allow)
+            return
+        }
+        
+        let params = fragment
+            .components(separatedBy: "&")
+            .map { $0.components(separatedBy: "=") }
+            .reduce([String: String]()) { result, param in
+                var dict = result
+                let key = param[0]
+                let value = param[1]
+                dict[key] = value
+                return dict
+        }
+        
+        let token = params["access_token"]
+        let userID = params["user_id"]
+        Session.session.token = token ?? ""
+        Session.session.userId = Int(userID ?? "0") ?? 0
+        print(Session.session.token)
+        print(Session.session.userId)
+        
+        
+        decisionHandler(.cancel)
+        vkFriends()
+        webView.removeFromSuperview()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
+                present(twoScreen, animated: true, completion: nil)
+    }
+}
+
+
+
+struct AAA: Decodable {
+    var items: [Friends]
+}
+
+struct BBB: Decodable {
+    var response: AAA
+}
+
+struct Friends: Decodable {
+    var first_name: String
+    var last_name: String
+}
