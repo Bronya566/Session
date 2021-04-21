@@ -16,12 +16,13 @@ class ImageView: UIView{
     private var control: Like?
     
     func setNewImage(imageName: String) {
-        imageView?.image = UIImage(systemName: imageName)
+        imageView?.load(url: imageName)
     }    
 
     func imageSettings(imageName: String, likes: inout Int) {
         backgroundColor = .white
-        imageView = Avatar(image: UIImage(systemName: imageName))
+        imageView = Avatar()
+        imageView?.load(url: imageName)
         let shadow = imageView?.setShadow()
         addSubview(shadow!)
         imageView?.settings()

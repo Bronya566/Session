@@ -66,11 +66,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
                 scrol?.addGestureRecognizer(hideKeyboardGesture)
 
     }
-//    @IBAction func singButton(_action: UIButton){
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
-//        present(twoScreen, animated: true, completion: nil)
-//    }
     
     func vkSing() {
         var urlComponents = URLComponents()
@@ -91,112 +86,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
         webView.load(request)
     }
     
-    
-    func vkFriends(){
-        var urlComponents = URLComponents()
-                urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-                urlComponents.path = "/method/friends.get"
-        urlComponents.queryItems = [
-            URLQueryItem(name: "user_id", value: String(Session.session.userId)),
-            URLQueryItem(name: "order", value:  "name"),
-            URLQueryItem(name: "count", value:  "20"),
-            URLQueryItem(name: "fields", value:  "name"),
-            URLQueryItem(name: "access_token", value: Session.session.token),
-            URLQueryItem(name: "v", value: "5.68")
-        ]
-        let request = URLRequest(url: urlComponents.url!)
-        print(request)
-
-          print("")
-        Alamofire.request(request).response { [weak self] data in
-            do {
-                let json = try JSONDecoder().decode(BBB.self, from: data.data!) as BBB
-                    print(json)
-                print("")
-                var friends: [User] = []
-                json.response.items.forEach {
-                    let item = User(name: $0.first_name + $0.last_name)
-                    friends.append(item)
-                }
-                self?.vkFriendsPhoto()
-                self?.vkFriendsGroup()
-                self?.vkFriendsGroupSerch()
-            }
-            catch {
-                print(error)
-            }
-        }
-    }
-    
-    func vkFriendsPhoto(){
-        var urlComponents = URLComponents()
-                urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-                urlComponents.path = "/method/users.get"
-        urlComponents.queryItems = [
-            URLQueryItem(name: "user_ids", value: String(Session.session.userId)),
-            URLQueryItem(name: "fields", value:  "photo_50"),
-            URLQueryItem(name: "access_token", value: Session.session.token),
-            URLQueryItem(name: "v", value: "5.68")
-        ]
-        let request = URLRequest(url: urlComponents.url!)
-        print(request)
-
-          print("")
-        Alamofire.request(request).response { data in
-            print(data)
-            print("")
-        }
-    }
-    
-    
-    func vkFriendsGroup(){
-        var urlComponents = URLComponents()
-                urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-                urlComponents.path = "/method/groups.get"
-        urlComponents.queryItems = [
-            URLQueryItem(name: "user_id", value: String(Session.session.userId)),
-            URLQueryItem(name: "extended", value:  "1"),
-            URLQueryItem(name: "count", value:  "20"),
-            URLQueryItem(name: "access_token", value: Session.session.token),
-            URLQueryItem(name: "v", value: "5.68")
-        ]
-        let request = URLRequest(url: urlComponents.url!)
-        print(request)
-
-          print("")
-        Alamofire.request(request).response { data in
-            print(data)
-            print("")
-        }
-    }
-    
-    func vkFriendsGroupSerch(){
-        var urlComponents = URLComponents()
-                urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-                urlComponents.path = "/method/groups.search"
-        urlComponents.queryItems = [
-            
-            URLQueryItem(name: "q", value:  "Music"),
-            URLQueryItem(name: "count", value:  "20"),
-            URLQueryItem(name: "access_token", value: Session.session.token),
-            URLQueryItem(name: "v", value: "5.68")
-        ]
-        let request = URLRequest(url: urlComponents.url!)
-        print(request)
-
-          print("")
-        Alamofire.request(request).response { data in
-            print(data)
-            print("")
-        }
-    }
-    
-    
-
     @objc func keyboardWasShown(notification: Notification) {
            
            let info = notification.userInfo! as NSDictionary
@@ -229,10 +118,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
             self.scrol?.endEditing(true)
         }
 
-
-   
-   
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
                 for (index, circle) in circles.enumerated() {
@@ -260,32 +145,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
             }
         }
     }
-    
-   
-    
-    
-
-//    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-//        guard identifier == "twoScreen" else {return true}
-//            let isValid = validateLogin()
-//            if !isValid {
-//                showLoginAllert()
-//            }
-//            return isValid
-//
-//    }
-//    func validateLogin() -> Bool {
-//   //     return login = vkSing()
-//        return login.text == "admin" &&
-//               password.text == "12345"
-//    }
-//    func showLoginAllert(){
-//        let alert = UIAlertController(title: "Error", message: "Invalid login or password", preferredStyle: .alert)
-//        let action = UIAlertAction(title: "Okey", style: .cancel, handler: nil)
-//        alert.addAction(action)
-//        present(alert, animated: true, completion: nil)
-//    }
-    
 }
 
 extension ViewController {
@@ -309,14 +168,11 @@ extension ViewController {
         
         let token = params["access_token"]
         let userID = params["user_id"]
-        Session.session.token = token ?? ""
-        Session.session.userId = Int(userID ?? "0") ?? 0
-        print(Session.session.token)
-        print(Session.session.userId)
+        Session.shared.token = token ?? ""
+        Session.shared.userId = Int(userID ?? "0") ?? 0
         
         
         decisionHandler(.cancel)
-        vkFriends()
         webView.removeFromSuperview()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
@@ -324,17 +180,3 @@ extension ViewController {
     }
 }
 
-
-
-struct AAA: Decodable {
-    var items: [Friends]
-}
-
-struct BBB: Decodable {
-    var response: AAA
-}
-
-struct Friends: Decodable {
-    var first_name: String
-    var last_name: String
-}

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,6 +31,7 @@
 		BBDA3B6525E4038C0014166E /* GroupsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA3B6425E4038C0014166E /* GroupsViewController.swift */; };
 		BBDA8F4925EC1A92004C72FB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA8F4825EC1A92004C72FB /* User.swift */; };
 		BBDA8F4D25EC1A9E004C72FB /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA8F4C25EC1A9E004C72FB /* Group.swift */; };
+		BBF4A1A426306D68001279F8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4A1A326306D68001279F8 /* NetworkService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		BBDA3B6425E4038C0014166E /* GroupsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewController.swift; sourceTree = "<group>"; };
 		BBDA8F4825EC1A92004C72FB /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BBDA8F4C25EC1A9E004C72FB /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		BBF4A1A326306D68001279F8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +92,6 @@
 				154ED5C233E809CED0706663 /* Pods-Lesson1.debug.xcconfig */,
 				214B3100172924523E9AA545 /* Pods-Lesson1.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -107,6 +108,7 @@
 		BB18E33E25EABF1000A5E331 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				BBF4A1A226306D4B001279F8 /* Services */,
 				BBDA3B6125E3BE7D0014166E /* FriendsViewController.swift */,
 				BB9A383525F0EA6B00E435CC /* ImageView.swift */,
 				BBDA3B6425E4038C0014166E /* GroupsViewController.swift */,
@@ -197,6 +199,14 @@
 				BB0FEB972603980700AB39DA /* News.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		BBF4A1A226306D4B001279F8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				BBF4A1A326306D68001279F8 /* NetworkService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,6 +336,7 @@
 				BB66E28E261106010072F28B /* CustomPushAnimator.swift in Sources */,
 				BB66E2852611032D0072F28B /* AnimationNavigationController.swift in Sources */,
 				BB9A384225F4D9B900E435CC /* Like.swift in Sources */,
+				BBF4A1A426306D68001279F8 /* NetworkService.swift in Sources */,
 				BBC57BBB261F7A1500FC7ECD /* Session.swift in Sources */,
 				BB0FEB8E2602906400AB39DA /* NewsTableViewCell.swift in Sources */,
 				BB262DC325DE936B00AE94C4 /* AppDelegate.swift in Sources */,
