@@ -6,11 +6,22 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct Group {
-    var name: String
-    var imageName: String
-    var description: String
+@objc class Group: Object {
+    @objc dynamic var name: String = ""
+    @objc dynamic var imageName: String = ""
+    @objc dynamic var descriptionGroup: String = ""
+    override init() {
+        super.init()
+    }
+    
+    init(name: String, imageName: String, description: String = ""){
+        self.name = name
+        self.imageName = imageName
+        self.descriptionGroup = description
+        super.init()
+    }
 }
 
 struct GroupResponse: Decodable {

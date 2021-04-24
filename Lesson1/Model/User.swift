@@ -6,13 +6,29 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct User {
-    var name: String
-    var imageName: String?
+
+
+@objc class User: Object {
+    @objc dynamic var name: String = ""
+    @objc dynamic var imageName: String?
     var groups: [Group]?
-    var avatarLikes: Int = 0
+    @objc dynamic var avatarLikes: Int = 0
     var photos: [String]?
+    
+    override init() {
+        super.init()
+    }
+    
+    init(name: String, imageName: String? = "", groups: [Group]? = [], avatarLikes: Int = 0, photos: [String]? = []) {
+    self.name = name
+    self.imageName = imageName
+        self.groups = groups
+        self.avatarLikes = avatarLikes
+        self.photos = photos
+        super.init()
+    }
 }
 
 struct FriendsItems: Decodable {

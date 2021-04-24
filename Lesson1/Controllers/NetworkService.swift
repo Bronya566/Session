@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import RealmSwift
 
 class NetworkService {
     func vkFriends(handler: @escaping ([User]) -> Void) {
@@ -30,9 +31,10 @@ class NetworkService {
                 let json = try JSONDecoder().decode(FriendsResponse.self, from: data.data!) as FriendsResponse
                     print(json)
                 json.response.items.forEach {
-                    var item = User(name: $0.first_name + " " + $0.last_name)
+                    let item = User(name: $0.first_name + " " + $0.last_name)
                     item.imageName = $0.photo
                     item.photos = [$0.photo_200_orig]
+                    self.useRealm(name: item.name, imageName: item.imageName, groups: [], avatarLikes: item.avatarLikes, photos: item.photos )
                     friends.append(item)
                 }
             }
@@ -64,7 +66,7 @@ class NetworkService {
                 let json = try JSONDecoder().decode(GroupResponse.self, from: data.data!) as GroupResponse
                     print(json)
                 json.response.items.forEach {
-                    let item = Group(name: $0.name, imageName: $0.photo_50, description: "")
+                    let item = Group(name: $0.name, imageName: $0.photo_50)
                     groups.append(item)
                 }
             }
@@ -93,4 +95,57 @@ class NetworkService {
             print("")
         }
     }
+    
+    func useRealm(name: String, imageName: String? = "", groups: [Group]? = [], avatarLikes: Int = 0, photos: [String]? = []) {
+        let userName = User(name: name, imageName: imageName, groups: groups, avatarLikes: avatarLikes, photos: photos)
+        
+        let realm = try! Realm()
+        
+        try? realm.write {
+            realm.add([userName])
+        }
+        
+        loadUser()
+    }
+    
+    func loadUser() {
+        
+        do {
+            let realm = try Realm()
+            let users = realm.objects(User.self)
+            
+            print(users)
+            print(users.map {$0.name})
+        } catch {
+            print(error)
+        }
+    }
+    
+    
+    func useRealmGroup(name: String, imageName: String, descriptionGroup: String ) {
+        let userGroup = Group(name: name, imageName: imageName, description: descriptionGroup)
+        
+        let realm = try! Realm()
+        
+        try? realm.write {
+            realm.add([userGroup])
+        }
+        
+        loadGroup()
+    }
+    
+    func loadGroup() {
+        
+        do {
+            let realm = try Realm()
+            let groups = realm.objects(Group.self)
+            
+            print(groups)
+            print(groups.map {$0.name})
+        } catch {
+            print(error)
+        }
+    }
+    
+    
 }
