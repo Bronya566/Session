@@ -15,6 +15,7 @@ class FriendsViewController: UITableViewController {
     private var networkService = NetworkService()
     override func viewDidLoad() {
         super.viewDidLoad()
+        networkService.deleteRealm()
         networkService.vkFriends { data in
             self.updateFriends(data: data)
         }

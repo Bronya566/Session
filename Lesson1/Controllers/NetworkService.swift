@@ -11,7 +11,6 @@ import RealmSwift
 
 class NetworkService {
     func vkFriends(handler: @escaping ([User]) -> Void) {
-        var friends: [User] = []
         var urlComponents = URLComponents()
                 urlComponents.scheme = "https"
         urlComponents.host = "api.vk.com"
@@ -26,7 +25,7 @@ class NetworkService {
         ]
         let request = URLRequest(url: urlComponents.url!)
 
-        Alamofire.request(request).response { data in
+        Alamofire.request(request).response { [weak self] data in
             do {
                 let json = try JSONDecoder().decode(FriendsResponse.self, from: data.data!) as FriendsResponse
                     print(json)
@@ -34,19 +33,18 @@ class NetworkService {
                     let item = User(name: $0.first_name + " " + $0.last_name)
                     item.imageName = $0.photo
                     item.photos = [$0.photo_200_orig]
-                    self.useRealm(name: item.name, imageName: item.imageName, groups: [], avatarLikes: item.avatarLikes, photos: item.photos )
-                    friends.append(item)
+                    self?.useRealm(name: item.name, imageName: item.imageName, groups: [], avatarLikes: item.avatarLikes, photos: item.photos )
                 }
             }
             catch {
                 print(error)
             }
-            handler(friends)
+            
+            handler(self?.loadUser() ?? [])
         }
     }
     
     func vkFriendsGroup(handler: @escaping ([Group]) -> Void) {
-        var groups: [Group] = []
         var urlComponents = URLComponents()
                 urlComponents.scheme = "https"
         urlComponents.host = "api.vk.com"
@@ -61,19 +59,19 @@ class NetworkService {
         ]
         let request = URLRequest(url: urlComponents.url!)
 
-        Alamofire.request(request).response { data in
+        Alamofire.request(request).response { [weak self] data in
             do {
                 let json = try JSONDecoder().decode(GroupResponse.self, from: data.data!) as GroupResponse
                     print(json)
                 json.response.items.forEach {
                     let item = Group(name: $0.name, imageName: $0.photo_50)
-                    groups.append(item)
+                    self?.useRealmGroup(name: item.name, imageName: item.imageName, descriptionGroup: item.description)
                 }
             }
             catch {
                 print(error)
             }
-            handler(groups)
+            handler(self?.loadGroup() ?? [])
         }
     }
     
@@ -100,25 +98,21 @@ class NetworkService {
         let userName = User(name: name, imageName: imageName, groups: groups, avatarLikes: avatarLikes, photos: photos)
         
         let realm = try! Realm()
-        
         try? realm.write {
             realm.add([userName])
         }
-        
-        loadUser()
     }
     
-    func loadUser() {
-        
+    func loadUser() -> [User] {
+        var friends: [User] = []
         do {
             let realm = try Realm()
             let users = realm.objects(User.self)
-            
-            print(users)
-            print(users.map {$0.name})
+            friends = users.map { $0 }
         } catch {
             print(error)
         }
+        return friends
     }
     
     
@@ -130,18 +124,26 @@ class NetworkService {
         try? realm.write {
             realm.add([userGroup])
         }
-        
-        loadGroup()
     }
     
-    func loadGroup() {
-        
+    func loadGroup() -> [Group] {
+        var groups: [Group] = []
         do {
             let realm = try Realm()
-            let groups = realm.objects(Group.self)
-            
-            print(groups)
-            print(groups.map {$0.name})
+            let models = realm.objects(Group.self)
+            groups = models.map { $0 }
+        } catch {
+            print(error)
+        }
+        return groups
+    }
+    
+    func deleteRealm() {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.deleteAll()
+            }
         } catch {
             print(error)
         }
