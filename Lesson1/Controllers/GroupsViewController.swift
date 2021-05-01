@@ -9,15 +9,20 @@ import UIKit
 
 class GroupsViewController: UITableViewController {
     
-    private var groups = TestsData.testsGroup()
+    private var groups: [Group] = []
     private var finishGroups = TestsData.testsGroup()
+    private var networkService = NetworkService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        
+        networkService.vkFriendsGroup() { data in
+            self.updateGroups(data: data)
+        }
+    }
+    
+    private func updateGroups(data: [Group]) {
+        groups = data
+        tableView.reloadData()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,7 +50,7 @@ class GroupsViewController: UITableViewController {
 
         let name = groups[indexPath.row].name
         cell.textLabel?.text = name
-        cell.imageView?.image = UIImage(systemName: groups[indexPath.row].imageName)
+        cell.imageView?.load(url: groups[indexPath.row].imageName)
 
         return cell
     }

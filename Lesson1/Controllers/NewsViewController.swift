@@ -12,12 +12,8 @@ import UIKit
 class NewsViewController: UITableViewController {
     private let news = TestsData.testsNews()
   
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
        
@@ -36,6 +32,4 @@ class NewsViewController: UITableViewController {
         cell.newsLabel?.text = news[indexPath.row].text
         return cell
     }
-    
-
 }

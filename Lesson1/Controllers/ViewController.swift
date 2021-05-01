@@ -6,12 +6,21 @@
 //
 
 import UIKit
+import Alamofire
+import WebKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, WKNavigationDelegate {
  
-    @IBOutlet weak var login: UITextField!
+    @IBOutlet weak var webView: WKWebView! {
+        didSet{
+            webView.navigationDelegate = self
+        }
+    }
+
     
-    @IBOutlet weak var password: UITextField!
+//    @IBOutlet weak var login: UITextField!
+//
+//    @IBOutlet weak var password: UITextField!
     
     @IBOutlet weak var scrol: UIScrollView!
     
@@ -29,6 +38,14 @@ class ViewController: UIViewController {
     private lazy var circles = [circleA, circleB, circleC]
     
     override func viewDidLoad() {
+//        let url = NSURL (string: "https://vk.com/login")
+//        let requestObj = NSURLRequest(url: url! as URL)
+//        webView.load(requestObj as URLRequest)
+        vkSing()
+        //////////////////////////
+
+       ////////////////////////////
+        
         super.viewDidLoad()
         view.addSubview(stackView)
                stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,14 +66,25 @@ class ViewController: UIViewController {
                 scrol?.addGestureRecognizer(hideKeyboardGesture)
 
     }
-    @IBAction func singButton(_action: UIButton){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
-        present(twoScreen, animated: true, completion: nil)
-    }
     
-
-
+    func vkSing() {
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+                urlComponents.host = "oauth.vk.com"
+                urlComponents.path = "/authorize"
+                urlComponents.queryItems = [
+                    URLQueryItem(name: "client_id", value: "7824758"),
+                    URLQueryItem(name: "display", value: "mobile"),
+                    URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
+                    URLQueryItem(name: "scope", value: "262150"),
+                    URLQueryItem(name: "response_type", value: "token"),
+                    URLQueryItem(name: "v", value: "5.68")
+                ]
+                
+                let request = URLRequest(url: urlComponents.url!)
+                
+        webView.load(request)
+    }
     
     @objc func keyboardWasShown(notification: Notification) {
            
@@ -90,10 +118,6 @@ class ViewController: UIViewController {
             self.scrol?.endEditing(true)
         }
 
-
-   
-   
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
                 for (index, circle) in circles.enumerated() {
@@ -121,30 +145,38 @@ class ViewController: UIViewController {
             }
         }
     }
-    
-   
-    
-    
+}
 
-//    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-//        guard identifier == "twoScreen" else {return true}
-//            let isValid = validateLogin()
-//            if !isValid {
-//                showLoginAllert()
-//            }
-//            return isValid
-//
-//    }
-//    func validateLogin() -> Bool {
-//        return login.text == "admin" &&
-//               password.text == "12345"
-//    }
-//    func showLoginAllert(){
-//        let alert = UIAlertController(title: "Error", message: "Invalid login or password", preferredStyle: .alert)
-//        let action = UIAlertAction(title: "Okey", style: .cancel, handler: nil)
-//        alert.addAction(action)
-//        present(alert, animated: true, completion: nil)
-//    }
-    
+extension ViewController {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        
+        guard let url = navigationResponse.response.url, url.path == "/blank.html", let fragment = url.fragment  else {
+            decisionHandler(.allow)
+            return
+        }
+        
+        let params = fragment
+            .components(separatedBy: "&")
+            .map { $0.components(separatedBy: "=") }
+            .reduce([String: String]()) { result, param in
+                var dict = result
+                let key = param[0]
+                let value = param[1]
+                dict[key] = value
+                return dict
+        }
+        
+        let token = params["access_token"]
+        let userID = params["user_id"]
+        Session.shared.token = token ?? ""
+        Session.shared.userId = Int(userID ?? "0") ?? 0
+        
+        
+        decisionHandler(.cancel)
+        webView.removeFromSuperview()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
+                present(twoScreen, animated: true, completion: nil)
+    }
 }
 

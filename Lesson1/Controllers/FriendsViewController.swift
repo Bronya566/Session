@@ -9,18 +9,28 @@ import UIKit
 
 class FriendsViewController: UITableViewController {
     
-     var friends = TestsData.testsFriends()
+    var friends: [User] = []
     private var friendGrouping: [String:[User]] = [:]
     private var letters: [String] = []
+    private var networkService = NetworkService()
     override func viewDidLoad() {
         super.viewDidLoad()
+        networkService.deleteRealm()
+        networkService.vkFriends { data in
+            self.updateFriends(data: data)
+        }
     }
-
+    
+    private func updateFriends(data: [User]) {
+        friends = data
+        tableView.reloadData()
+    }
+    
     // MARK: - Table view data source
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let controller = segue.destination as? FriendsImageViewController,
            let indexPath = tableView.indexPathForSelectedRow
-           {
+        {
             let index = indexPath.section
             let letter = letters[index]
             let friend = friendGrouping[letter]?[indexPath.row]
@@ -28,17 +38,8 @@ class FriendsViewController: UITableViewController {
             controller.photoFriends.1 = friend?.imageName ?? "person"
             controller.photoFriends.2 = friend?.avatarLikes ?? 0
             controller.photoFriends.3 = friend?.photos
+        }
     }
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-    }
-    
-    
-    
-    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let first = letters[section]
@@ -50,7 +51,7 @@ class FriendsViewController: UITableViewController {
         groupOfFriends()
         return friendGrouping.count
     }
- 
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "Friends1", for: indexPath) as! Friend1TableViewCell
         let index = indexPath.section
@@ -58,13 +59,13 @@ class FriendsViewController: UITableViewController {
         let name = friend[indexPath.item]
         cell.titleLabel.text = name.name
         let imageForName = friend[indexPath.item]
-        cell.iconImageView?.image = UIImage(systemName: imageForName.imageName ?? "")
+        cell.iconImageView?.load(url: imageForName.imageName ?? "")
         cell.iconImageView?.layer.cornerRadius = cell.imageView!.frame.height/2
         cell.iconImageView?.layer.masksToBounds = true
-      
+        
         return cell
-     
-    
+        
+        
     }
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50))
@@ -95,11 +96,11 @@ class FriendsViewController: UITableViewController {
         var groups: [String: [User]] = [:]
         for friend in friends {
             if let first = friend.name.first?.uppercased() {
-            if groups.contains(where: {$0.key == first}) {
-                groups[first] = groups[first]! + [friend]
-            } else {
-                groups[first] = [friend]
-            }
+                if groups.contains(where: {$0.key == first}) {
+                    groups[first] = groups[first]! + [friend]
+                } else {
+                    groups[first] = [friend]
+                }
             }
         }
         friendGrouping = groups
@@ -122,21 +123,21 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
     var imageView: ImageView?
     var currentImage = 0
     
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            imageView = ImageView(frame: CGRect(x: 0, y: 0, width: 600, height: 600))
-            imageView?.imageSettings(imageName: photoFriends.1, likes: &photoFriends.2)
-            view.addSubview(imageView!)
-            self.navigationItem.title = photoFriends.0
-            let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
-            swipeRight.direction = UISwipeGestureRecognizer.Direction.right
-                self.view.addGestureRecognizer(swipeRight)
-
-            let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
-            swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
-                self.view.addGestureRecognizer(swipeLeft)
-            
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        imageView = ImageView(frame: CGRect(x: 0, y: 0, width: 600, height: 600))
+        imageView?.imageSettings(imageName: photoFriends.1, likes: &photoFriends.2)
+        view.addSubview(imageView!)
+        self.navigationItem.title = photoFriends.0
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
+        self.view.addGestureRecognizer(swipeLeft)
+        
+    }
     @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
         var photo: [String] = []
         if let photos = photoFriends.3 {
@@ -144,71 +145,82 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
         } else {
             photo = [photoFriends.1]
         }
-            if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-
-
-                switch swipeGesture.direction {
-                case UISwipeGestureRecognizer.Direction.left:
-                    if currentImage == photo.count - 1 {
-                        currentImage = 0
-
-                    }else{
-                        currentImage += 1
-                    }
-                 
-                    UIView.animate(withDuration: 0.5, delay: 0.0, options: [UIView.AnimationOptions.curveEaseIn, UIView.AnimationOptions.transitionCurlUp], animations: {
-
-                        self.imageView?.imageView?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
-
-                     }) { (finished) in
-                         UIView.animate(withDuration: 1, animations: {
-                            self.imageView?.setNewImage(imageName: photo[self.currentImage])
-
-                            self.imageView?.imageView?.transform = CGAffineTransform(translationX: (self.imageView?.frame.width)!, y: 0)
-                          self.imageView?.imageView?.transform = CGAffineTransform.identity
-
-                       })
-                    }
-
-
-                case UISwipeGestureRecognizer.Direction.right:
-                    if currentImage == 0 {
-                        currentImage = photo.count - 1
-                    }else{
-                        currentImage -= 1
-                    }
-                   
-                    UIView.animate(withDuration: 0.5, delay: 0.0, options: [UIView.AnimationOptions.curveEaseIn, UIView.AnimationOptions.transitionCurlUp], animations: {
-                        self.imageView?.imageView?.transform = CGAffineTransform(translationX: -(self.imageView?.frame.width)! + 10, y: 0)
-                        self.imageView?.imageView?.alpha = 0
-
-                     }) { (finished) in
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            
+            
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizer.Direction.left:
+                if currentImage == photo.count - 1 {
+                    currentImage = 0
+                    
+                }else{
+                    currentImage += 1
+                }
+                
+                UIView.animate(withDuration: 0.5, delay: 0.0, options: [UIView.AnimationOptions.curveEaseIn, UIView.AnimationOptions.transitionCurlUp], animations: {
+                    
+                    self.imageView?.imageView?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
+                    
+                }) { (finished) in
+                    UIView.animate(withDuration: 1, animations: {
                         self.imageView?.setNewImage(imageName: photo[self.currentImage])
-                        UIView.animate(withDuration: 0.5, delay: 0, options: UIView.AnimationOptions.curveEaseIn, animations:{
-                            self.imageView?.imageView?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
-                         }) { (finished) in
-                            self.imageView?.imageView?.alpha = 1
-                            UIView.animate(withDuration: 1, animations: {
+                        
+                        self.imageView?.imageView?.transform = CGAffineTransform(translationX: (self.imageView?.frame.width)!, y: 0)
+                        self.imageView?.imageView?.transform = CGAffineTransform.identity
+                        
+                    })
+                }
+                
+                
+            case UISwipeGestureRecognizer.Direction.right:
+                if currentImage == 0 {
+                    currentImage = photo.count - 1
+                }else{
+                    currentImage -= 1
+                }
+                
+                UIView.animate(withDuration: 0.5, delay: 0.0, options: [UIView.AnimationOptions.curveEaseIn, UIView.AnimationOptions.transitionCurlUp], animations: {
+                    self.imageView?.imageView?.transform = CGAffineTransform(translationX: -(self.imageView?.frame.width)! + 10, y: 0)
+                    self.imageView?.imageView?.alpha = 0
+                    
+                }) { (finished) in
+                    self.imageView?.setNewImage(imageName: photo[self.currentImage])
+                    UIView.animate(withDuration: 0.5, delay: 0, options: UIView.AnimationOptions.curveEaseIn, animations:{
+                        self.imageView?.imageView?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
+                    }) { (finished) in
+                        self.imageView?.imageView?.alpha = 1
+                        UIView.animate(withDuration: 1, animations: {
                             self.imageView?.imageView?.transform = CGAffineTransform.identity
-                            })
-                         }
+                        })
                     }
+                }
+                
+            default:
+                break
+            }
+        }
+    } 
+}
 
-                default:
-                    break
+extension UIImageView {
+    func load(url: String) {
+        guard let url = URL(string: url) else {
+            return
+        }
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
                 }
             }
+        }
     }
+}
 
-    
-    
-    
-    }
 
-    
-    
-    
-    
-    
-    
+
+
+
 
