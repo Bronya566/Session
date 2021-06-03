@@ -31,7 +31,7 @@ class ImageView: UIView{
     }
     
     private func controlSettings(like: inout Int) {
-        control = Like(numberOfLikes: &like)
+        control = Like(numberOfLikes: like)
         control?.setControl()
         addSubview(control!)
     }

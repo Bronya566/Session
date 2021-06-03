@@ -11,9 +11,15 @@ class Like: UIControl {
     private var likes = 0
     private var likesView: UILabel?
     private var imageView: UIButton!
-    init(numberOfLikes: inout Int) {
+    init(numberOfLikes: Int) {
         super.init(frame: CGRect(x: 50, y: 400, width: 70, height: 30))
         likes = numberOfLikes
+        isSelected = true
+    }
+    
+    init(like: Int) {
+        super.init(frame: CGRect(x: 50, y: 20, width: 70, height: 30))
+        likes = like
         isSelected = true
     }
     
