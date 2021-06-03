@@ -171,12 +171,17 @@ extension ViewController {
         Session.shared.token = token ?? ""
         Session.shared.userId = Int(userID ?? "0") ?? 0
         
+        saveAccount()
         
         decisionHandler(.cancel)
         webView.removeFromSuperview()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let twoScreen = storyboard.instantiateViewController(identifier: "twoScreen")
                 present(twoScreen, animated: true, completion: nil)
+    }
+    
+    private func saveAccount() {
+        
     }
 }
 
