@@ -94,6 +94,40 @@ class NetworkService {
         }
     }
     
+    
+    func vkNewsPost(handler: @escaping ([News]) -> Void){
+        var urlComponents = URLComponents()
+                urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+                urlComponents.path = "/method/newsfeed.get"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "user_id", value: String(Session.shared.userId)),
+            URLQueryItem(name: "filters", value:  "post"),
+            URLQueryItem(name: "count", value:  "5"),
+            URLQueryItem(name: "access_token", value: Session.shared.token),
+            URLQueryItem(name: "v", value: "5.131")
+        ]
+        let request = URLRequest(url: urlComponents.url!)
+        var news: [News] = []
+        print(request)
+        Alamofire.request(request).response { data in
+            do {
+                let json = try JSONDecoder().decode(NewsResponse.self, from: data.data!) as NewsResponse
+                    print(json)
+                json.response.items.forEach { item in
+                    print(item)
+                    let item = News(text: item.text, imageName: item.attachments?[0].photo?.sizes?[0].url, likes: item.likes?.count)
+                    news.append(item)
+                }
+            }
+            catch {
+                print(error)
+            }
+            handler(news)
+        }
+    }
+    
+    
     func useRealm(name: String, imageName: String? = "", groups: [Group]? = [], avatarLikes: Int = 0, photos: [String]? = []) {
         let userName = User(name: name, imageName: imageName, groups: groups, avatarLikes: avatarLikes, photos: photos)
         

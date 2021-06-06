@@ -10,4 +10,35 @@ import Foundation
 struct News {
     var text: String?
     var imageName: String?
+    var likes: Int?
+}
+
+struct NewsResponse: Decodable {
+    var response: NewsItems
+}
+
+struct NewsItems: Decodable {
+    var items: [NewsItem]
+}
+
+struct NewsItem: Decodable {
+    var text: String?
+    var attachments: [NewsAttachments]?
+    var likes: NewsLikes?
+}
+
+struct NewsAttachments: Decodable {
+    var photo: NewsPhotoPost?
+}
+
+struct NewsPhotoPost: Decodable {
+    var sizes: [NewsPhotoPostUrl]?
+}
+
+struct NewsPhotoPostUrl: Decodable {
+    var url: String?
+}
+
+struct NewsLikes: Decodable {
+    var count: Int?
 }

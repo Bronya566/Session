@@ -12,7 +12,8 @@ class NewsPhoto: UITableViewCell {
     private var newsImageView: UIImageView
     
     init(image: String) {
-        newsImageView = UIImageView(image: UIImage(systemName: image))
+        newsImageView = UIImageView()
+        newsImageView.load(url: image)
         super.init(style: .default, reuseIdentifier: "")
         self.addSubview(newsImageView)
         setupConstraints()
