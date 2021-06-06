@@ -10,11 +10,15 @@ import UIKit
 
 
 class NewsViewController: UITableViewController {
-    private let news = TestsData.testsNews()
+    private var news: [News] = []
     private var numberOfNews: (news: Int, type: Int) = (news: 0, type: 0)
+    private var networkService = NetworkService()
   
     override func viewDidLoad() {
         super.viewDidLoad()
+        networkService.vkNewsPost { [weak self] data in
+            self?.getPosts(posts: data)
+        }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
@@ -38,7 +42,7 @@ class NewsViewController: UITableViewController {
             numberOfNews.type += 1
         case 1: cell = NewsPhoto(image: news[numberOfNews.news].imageName ?? "")
             numberOfNews.type += 1
-        case 2: cell = NewsAction(likes: 100, isRepost: true)
+        case 2: cell = NewsAction(likes: news[numberOfNews.news].likes ?? 0, isRepost: true)
             numberOfNews.type = 0
             numberOfNews.news += 1
         default: cell = UITableViewCell(style: .default, reuseIdentifier: "")
@@ -48,5 +52,10 @@ class NewsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         return
+    }
+    
+    private func getPosts(posts: [News]) {
+        news = posts
+        self.tableView.reloadData()
     }
 }
