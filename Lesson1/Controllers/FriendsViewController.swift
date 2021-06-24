@@ -13,6 +13,7 @@ class FriendsViewController: UITableViewController {
     private var friendGrouping: [String:[User]] = [:]
     private var letters: [String] = []
     private var networkService = NetworkService()
+    private let photoService = PhotoService()
     override func viewDidLoad() {
         super.viewDidLoad()
         networkService.deleteRealm()
@@ -59,7 +60,11 @@ class FriendsViewController: UITableViewController {
         let name = friend[indexPath.item]
         cell.titleLabel.text = name.name
         let imageForName = friend[indexPath.item]
-        cell.iconImageView?.load(url: imageForName.imageName ?? "")
+        let photo = photoService.photo(byUrl: imageForName.imageName ?? "") {
+            tableView.reloadData()
+        }
+        cell.iconImageView.image = photo
+    //    cell.iconImageView?.load(url: imageForName.imageName ?? "")
         cell.iconImageView?.layer.cornerRadius = cell.imageView!.frame.height/2
         cell.iconImageView?.layer.masksToBounds = true
         
@@ -126,7 +131,9 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView = ImageView(frame: CGRect(x: 0, y: 0, width: 600, height: 600))
-        imageView?.imageSettings(imageName: photoFriends.1, likes: &photoFriends.2)
+        imageView?.imageSettings(imageName: photoFriends.1, likes: &photoFriends.2) {
+            return
+        }
         view.addSubview(imageView!)
         self.navigationItem.title = photoFriends.0
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture))
@@ -163,7 +170,9 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
                     
                 }) { (finished) in
                     UIView.animate(withDuration: 1, animations: {
-                        self.imageView?.setNewImage(imageName: photo[self.currentImage])
+                        self.imageView?.setNewImage(imageName: photo[self.currentImage]) {
+                            return
+                        }
                         
                         self.imageView?.imageView?.transform = CGAffineTransform(translationX: (self.imageView?.frame.width)!, y: 0)
                         self.imageView?.imageView?.transform = CGAffineTransform.identity
@@ -184,7 +193,9 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
                     self.imageView?.imageView?.alpha = 0
                     
                 }) { (finished) in
-                    self.imageView?.setNewImage(imageName: photo[self.currentImage])
+                    self.imageView?.setNewImage(imageName: photo[self.currentImage]) {
+                        
+                    }
                     UIView.animate(withDuration: 0.5, delay: 0, options: UIView.AnimationOptions.curveEaseIn, animations:{
                         self.imageView?.imageView?.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
                     }) { (finished) in
@@ -200,23 +211,6 @@ class FriendsImageViewController: UIViewController, UICollectionViewDataSource, 
             }
         }
     } 
-}
-
-extension UIImageView {
-    func load(url: String) {
-        guard let url = URL(string: url) else {
-            return
-        }
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
 }
 
 

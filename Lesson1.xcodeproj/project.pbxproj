@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		23FC981F3B0D0488D50FC069 /* Pods_Lesson1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E0A242ADFD1F338194FE95 /* Pods_Lesson1.framework */; };
+		BB0E06BC26848C8F002AA2C2 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0E06BB26848C8F002AA2C2 /* PhotoService.swift */; };
 		BB0FEB8B26028B3700AB39DA /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0FEB8A26028B3700AB39DA /* NewsViewController.swift */; };
 		BB0FEB8E2602906400AB39DA /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0FEB8D2602906400AB39DA /* NewsTableViewCell.swift */; };
 		BB0FEB982603980700AB39DA /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0FEB972603980700AB39DA /* News.swift */; };
@@ -26,18 +27,21 @@
 		BB9A383625F0EA6B00E435CC /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A383525F0EA6B00E435CC /* ImageView.swift */; };
 		BB9A383925F3E42300E435CC /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A383825F3E42300E435CC /* PhotoCell.swift */; };
 		BB9A384225F4D9B900E435CC /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A384125F4D9B900E435CC /* Like.swift */; };
+		BBA06BF42668F3D500F8E4D0 /* NewsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA06BF32668F3D500F8E4D0 /* NewsSection.swift */; };
 		BBC57BBB261F7A1500FC7ECD /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC57BBA261F7A1500FC7ECD /* Session.swift */; };
 		BBDA3B6225E3BE7D0014166E /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA3B6125E3BE7D0014166E /* FriendsViewController.swift */; };
 		BBDA3B6525E4038C0014166E /* GroupsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA3B6425E4038C0014166E /* GroupsViewController.swift */; };
 		BBDA8F4925EC1A92004C72FB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA8F4825EC1A92004C72FB /* User.swift */; };
 		BBDA8F4D25EC1A9E004C72FB /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDA8F4C25EC1A9E004C72FB /* Group.swift */; };
 		BBF4A1A426306D68001279F8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4A1A326306D68001279F8 /* NetworkService.swift */; };
+		BBFE6954265033E900DAF401 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBFE6953265033E900DAF401 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		154ED5C233E809CED0706663 /* Pods-Lesson1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lesson1.debug.xcconfig"; path = "Target Support Files/Pods-Lesson1/Pods-Lesson1.debug.xcconfig"; sourceTree = "<group>"; };
 		214B3100172924523E9AA545 /* Pods-Lesson1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lesson1.release.xcconfig"; path = "Target Support Files/Pods-Lesson1/Pods-Lesson1.release.xcconfig"; sourceTree = "<group>"; };
 		51E0A242ADFD1F338194FE95 /* Pods_Lesson1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lesson1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0E06BB26848C8F002AA2C2 /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
 		BB0FEB8A26028B3700AB39DA /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
 		BB0FEB8D2602906400AB39DA /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		BB0FEB972603980700AB39DA /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
@@ -58,12 +62,14 @@
 		BB9A383525F0EA6B00E435CC /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		BB9A383825F3E42300E435CC /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		BB9A384125F4D9B900E435CC /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
+		BBA06BF32668F3D500F8E4D0 /* NewsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsSection.swift; sourceTree = "<group>"; };
 		BBC57BBA261F7A1500FC7ECD /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		BBDA3B6125E3BE7D0014166E /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		BBDA3B6425E4038C0014166E /* GroupsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewController.swift; sourceTree = "<group>"; };
 		BBDA8F4825EC1A92004C72FB /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BBDA8F4C25EC1A9E004C72FB /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		BBF4A1A326306D68001279F8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		BBFE6953265033E900DAF401 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +107,7 @@
 				BB18E34525EAC03100A5E331 /* Friend1TableViewCell.swift */,
 				BB0FEB8D2602906400AB39DA /* NewsTableViewCell.swift */,
 				BB9A383825F3E42300E435CC /* PhotoCell.swift */,
+				BBA06BF32668F3D500F8E4D0 /* NewsSection.swift */,
 			);
 			path = Sells;
 			sourceTree = "<group>";
@@ -112,6 +119,7 @@
 				BBDA3B6125E3BE7D0014166E /* FriendsViewController.swift */,
 				BB9A383525F0EA6B00E435CC /* ImageView.swift */,
 				BBDA3B6425E4038C0014166E /* GroupsViewController.swift */,
+				BB0E06BB26848C8F002AA2C2 /* PhotoService.swift */,
 				BB262DC625DE936B00AE94C4 /* ViewController.swift */,
 				BB0FEB8A26028B3700AB39DA /* NewsViewController.swift */,
 				BB9A383025EEAB6E00E435CC /* TestsData.swift */,
@@ -159,6 +167,7 @@
 				BB18E33D25EABEFF00A5E331 /* Sells */,
 				BB262DC825DE936B00AE94C4 /* Main.storyboard */,
 				BB262DCD25DE937200AE94C4 /* LaunchScreen.storyboard */,
+				BBFE6953265033E900DAF401 /* GoogleService-Info.plist */,
 				BB262DD025DE937200AE94C4 /* Info.plist */,
 			);
 			path = Lesson1;
@@ -269,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB262DCF25DE937200AE94C4 /* LaunchScreen.storyboard in Resources */,
+				BBFE6954265033E900DAF401 /* GoogleService-Info.plist in Resources */,
 				BB262DCC25DE937200AE94C4 /* Assets.xcassets in Resources */,
 				BB262DCA25DE936B00AE94C4 /* Main.storyboard in Resources */,
 			);
@@ -337,11 +347,13 @@
 				BB66E2852611032D0072F28B /* AnimationNavigationController.swift in Sources */,
 				BB9A384225F4D9B900E435CC /* Like.swift in Sources */,
 				BBF4A1A426306D68001279F8 /* NetworkService.swift in Sources */,
+				BBA06BF42668F3D500F8E4D0 /* NewsSection.swift in Sources */,
 				BBC57BBB261F7A1500FC7ECD /* Session.swift in Sources */,
 				BB0FEB8E2602906400AB39DA /* NewsTableViewCell.swift in Sources */,
 				BB262DC325DE936B00AE94C4 /* AppDelegate.swift in Sources */,
 				BB262DC525DE936B00AE94C4 /* SceneDelegate.swift in Sources */,
 				BBDA3B6525E4038C0014166E /* GroupsViewController.swift in Sources */,
+				BB0E06BC26848C8F002AA2C2 /* PhotoService.swift in Sources */,
 				BB9A383925F3E42300E435CC /* PhotoCell.swift in Sources */,
 				BBDA8F4925EC1A92004C72FB /* User.swift in Sources */,
 			);
