@@ -40,7 +40,9 @@ class NewsViewController: UITableViewController {
         switch numberOfNews.type {
         case 0: cell = NewsText(text: news[numberOfNews.news].text ?? "")
             numberOfNews.type += 1
-        case 1: cell = NewsPhoto(image: news[numberOfNews.news].imageName ?? "")
+        case 1: cell = NewsPhoto(image: news[numberOfNews.news].imageName ?? "") {
+            return
+        }
             numberOfNews.type += 1
         case 2: cell = NewsAction(likes: news[numberOfNews.news].likes ?? 0, isRepost: true)
             numberOfNews.type = 0

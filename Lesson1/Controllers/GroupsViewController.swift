@@ -12,6 +12,7 @@ class GroupsViewController: UITableViewController {
     private var groups: [Group] = []
     private var finishGroups = TestsData.testsGroup()
     private var networkService = NetworkService()
+    private let photoService = PhotoService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +51,10 @@ class GroupsViewController: UITableViewController {
 
         let name = groups[indexPath.row].name
         cell.textLabel?.text = name
-        cell.imageView?.load(url: groups[indexPath.row].imageName)
+        let photo = photoService.photo(byUrl: groups[indexPath.row].imageName) {
+            tableView.reloadData()
+        }
+        cell.imageView?.image = photo
 
         return cell
     }

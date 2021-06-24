@@ -14,15 +14,18 @@ class ImageView: UIView{
 
     @IBOutlet var imageView: Avatar?
     private var control: Like?
+    private let photoService = PhotoService()
     
-    func setNewImage(imageName: String) {
-        imageView?.load(url: imageName)
+    func setNewImage(imageName: String, reloadAction: @escaping () -> Void) {
+        let photo = photoService.photo(byUrl: imageName, action: reloadAction)
+        imageView?.image = photo
     }    
 
-    func imageSettings(imageName: String, likes: inout Int) {
+    func imageSettings(imageName: String, likes: inout Int, action:  @escaping () -> Void) {
         backgroundColor = .white
         imageView = Avatar()
-        imageView?.load(url: imageName)
+        let photo = photoService.photo(byUrl: imageName, action: action)
+        imageView?.image = photo
         let shadow = imageView?.setShadow()
         addSubview(shadow!)
         imageView?.settings()

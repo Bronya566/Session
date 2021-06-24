@@ -10,10 +10,12 @@ import UIKit
 
 class NewsPhoto: UITableViewCell {
     private var newsImageView: UIImageView
+    private let photoService = PhotoService()
     
-    init(image: String) {
+    init(image: String, reloadAction: @escaping () -> Void) {
         newsImageView = UIImageView()
-        newsImageView.load(url: image)
+        let photo = photoService.photo(byUrl: image, action: reloadAction)
+        newsImageView.image = photo
         super.init(style: .default, reuseIdentifier: "")
         self.addSubview(newsImageView)
         setupConstraints()
