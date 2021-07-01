@@ -103,6 +103,7 @@ class NetworkService {
         urlComponents.queryItems = [
             URLQueryItem(name: "user_id", value: String(Session.shared.userId)),
             URLQueryItem(name: "filters", value:  "post"),
+            URLQueryItem(name: "start_time", value: "162515419"),
             URLQueryItem(name: "count", value:  "5"),
             URLQueryItem(name: "access_token", value: Session.shared.token),
             URLQueryItem(name: "v", value: "5.131")
@@ -126,8 +127,7 @@ class NetworkService {
             handler(news)
         }
     }
-    
-    
+ 
     func useRealm(name: String, imageName: String? = "", groups: [Group]? = [], avatarLikes: Int = 0, photos: [String]? = []) {
         let userName = User(name: name, imageName: imageName, groups: groups, avatarLikes: avatarLikes, photos: photos)
         

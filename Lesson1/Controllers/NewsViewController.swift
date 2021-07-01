@@ -13,9 +13,11 @@ class NewsViewController: UITableViewController {
     private var news: [News] = []
     private var numberOfNews: (news: Int, type: Int) = (news: 0, type: 0)
     private var networkService = NetworkService()
-  
+    private var lastDateString : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupRefreshControl()
         networkService.vkNewsPost { [weak self] data in
             self?.getPosts(posts: data)
         }
@@ -56,8 +58,56 @@ class NewsViewController: UITableViewController {
         return
     }
     
+    fileprivate func setupRefreshControl() {
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.attributedTitle = NSAttributedString (string: "Обновление...")
+        tableView.refreshControl?.tintColor = .red
+        tableView.refreshControl?.addTarget(self, action: #selector(refreshNews), for: .valueChanged)
+        
+    }
+    @objc func refreshNews() {
+//        guard let date = lastDateString else {
+//            tableView.refreshControl?.endRefreshing()
+//            return
+//        }
+        networkService.vkNewsPost() { [weak self] data in
+                self?.getPosts(posts: data)
+        }
+//        service.getUrl
+//            .get({url in
+//                print(url)
+//            })
+//            .then(on: DispatchQueue.global(), service.getData(_:))
+//            .then(on: DispatchQueue.global(), service.getParsedData(_:))
+//            .then(on: DispatchQueue.global(), service.getNews(_:))
+//            .done(on: DispatchQueue.main){ [weak self] news in
+//                guard let self = self else {return}
+//                self.news = news
+//                self.tableView.reloadData()
+//                self.lastDateString = name.first?.getStringDate()}.ensure {
+//                    [weak self] in
+//                    self?.tableView.refreshControl?.endRefreshing()}.catch { error in
+//                        print(error)
+//            }
+        
+    }
+    
+
+    
     private func getPosts(posts: [News]) {
         news = posts
         self.tableView.reloadData()
+        self.lastDateString = posts.first?.getStringDate()
     }
+}
+
+class DateFormatterVK {
+    let dateFormatter = DateFormatter()
+    
+    func convertDate(timeIntervalSince1970: Double)-> String {
+        dateFormatter.dateFormat = "MM-dd-yyyy HH.mm"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        let date = Date(timeIntervalSince1970: timeIntervalSince1970)
+        return dateFormatter.string(from: date)
+}
 }
