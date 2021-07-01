@@ -39,10 +39,40 @@ class NewsPhoto: UITableViewCell {
 }
 
 class NewsText: UITableViewCell {
+    private var showMore: UIButton?
+    private var label: UILabel?
     init(text: String) {
         super.init(style: .default, reuseIdentifier: "")
-        self.textLabel?.text = text
+        label = UILabel(frame: CGRect(x: 10, y: 10, width: self.frame.size.width, height: 20))
+        var finalText = text
+        self.addSubview(label!)
+        if text.count > 200 {
+            let number = Int(text.count - 200)
+            finalText.removeLast(number)
+            finalText.append("...")
+            showMore = UIButton(frame: CGRect(x: 50, y: 60, width: 100, height: 15))
+            showMore?.setTitle("Show more", for: .normal)
+            self.addSubview(showMore!)
+            showMore?.backgroundColor = .blue
+            showMore?.isSelected = false
+            showMore?.isUserInteractionEnabled = true
+            showMore?.addTarget(self, action: #selector(showMoreTap), for: .touchUpInside)
+        }
+        label?.text = finalText
         self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+    }
+    
+    @objc func showMoreTap() {
+        guard let showMore = showMore else {
+            return
+        }
+        if showMore.isSelected {
+            showMore.isSelected = false
+            showMore.setTitle("Show more", for: .normal)
+        } else {
+            showMore.setTitle("Show less", for: .normal)
+            showMore.isSelected = true
+        }
     }
     
     required init?(coder: NSCoder) {
